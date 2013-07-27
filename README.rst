@@ -29,7 +29,7 @@ Now you can add one count to this monitor anywhere in your code::
     from monitoring import monitor
 
     def post_registration__handler(sender, user, *args, **kwargs):
-        monitor.add('user_count', 1)
+        monitor.get('user_count').add(1)
 
 django-monitoring will figure out, that the ``user_count`` monitor is connected
 to the ``MonitorUserCount`` model and it will also know that this model is

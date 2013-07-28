@@ -2,7 +2,7 @@
 from django.test import TestCase
 
 from ..models import MonitoringBase
-from .test_app.models import SomeCount
+from .test_app.models import UserCount
 
 
 class MonitoringBaseTestCase(TestCase):
@@ -19,6 +19,6 @@ class IntegerCountBaseTestCase(TestCase):
     longMessage = True
 
     def test_add(self):
-        SomeCount.add(1)
-        self.assertEqual(SomeCount.objects.all().count(), 1, msg=(
+        UserCount.add(1)
+        self.assertEqual(UserCount.objects.all().count(), 1, msg=(
             'When calling add it should add one new data item to the table'))

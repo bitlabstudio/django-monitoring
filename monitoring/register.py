@@ -7,6 +7,7 @@ added in your tests will still be available in later tests.
 
 """
 from .exceptions import MonitoringRegistryException
+from .models import MonitoringBase
 
 
 class Singleton(type):
@@ -40,6 +41,9 @@ class MonitoringRegistry(object):
         if monitor_name in self._registered_monitors.keys():
             raise MonitoringRegistryException(
                 'A monitor with this name has already been registered')
+        if not MonitoringBase in model_class.mro():
+            raise MonitoringRegistryException(
+                'Monitoring model class must inherit MonitoringBase')
         self._registered_monitors[monitor_name] = model_class
 
     def unregister(self, monitor_name):

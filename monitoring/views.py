@@ -1,8 +1,6 @@
 """Views for the monitoring app."""
-# from django.views.generic import TemplateView
-
-# from . import models
+from django.views.generic import TemplateView
 
 
-# class YourView(TemplateView):
-#    template_name = 'monitoring/default.html'
+class MonitoringView(TemplateView):
+    template_name = 'monitoring/index.html'

@@ -14,17 +14,19 @@ site every day.
 First you will create a model that can hold this data. django-monitoring will
 provide some abstract base classes for commonly used model types::
 
-    class MonitorUserCount(MonitorCountBase, models.Model):
+    class MonitorUserCount(IntegerCountBase, models.Model):
         pass
 
-Next you will register a new monitor that is connected to that monitor model::
+Next you will register a new monitor that is connected to that monitor model.
+This is similar to registering model admins, we need to do this so that the
+monitoring view knows which snippets to display::
 
     from monitoring import monitor
     from myapp.models import MonitorUserCount
 
     monitor.register('user_count', UserRegistrationCount)
 
-Now you can add one count to this monitor anywhere in your code::
+Now you can add a data point to this monitor anywhere in your code::
 
     from monitoring import monitor
 

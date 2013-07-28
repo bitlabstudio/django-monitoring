@@ -39,6 +39,10 @@ class IntegerCountBase(MonitoringBase, models.Model):
 
     class Meta:
         abstract = True
+        ordering = ('-date_created', )
+
+    def __unicode__(self):
+        return '{0} at {1}'.format(self.value, self.date_created)
 
     @classmethod
     def add(cls, value):

@@ -29,6 +29,16 @@ class MonitoringRegistry(object):
     def __init__(self, *args, **kwargs):
         self._registered_monitors = {}
 
+    def get(self, monitor_name):
+        """
+        Returns the monitoring class for the given monitor name.
+
+        :param monitor_name: :String representing the monitor name that has
+          been used to register the monitor.
+
+        """
+        return self._registered_monitors.get(monitor_name)
+
     def register(self, monitor_name, model_class):
         """
         Registers a monitor on server start.

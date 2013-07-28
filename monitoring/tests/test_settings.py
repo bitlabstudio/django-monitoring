@@ -48,11 +48,11 @@ EXTERNAL_APPS = [
     'django.contrib.sites',
     'django_jasmine',
     'django_nose',
+    'monitoring.tests.test_app',
 ]
 
 INTERNAL_APPS = [
     'monitoring',
-    'monitoring.tests.test_app',
 ]
 
 INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS

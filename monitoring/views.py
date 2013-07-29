@@ -1,7 +1,29 @@
 """Views for the monitoring app."""
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
+from django.views.generic import ListView, TemplateView
+
+from . import monitor
+
+
+class MonitoringViewMixin(object):
+    """Helper methods that all monitoring base views need."""
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(MonitoringViewMixin, self).dispatch(
+            request, *args, **kwargs)
+
+    def get_template_names(self):
+       """
+       Returns the template name for the view based on the view's model.
+
+       """
+       return ['monitoring/{0}.html'.format(self.model.__name__.lower()), ]
+
+
+class IntegerCountView(MonitoringViewMixin, ListView):
+    """Default view for the ``IntegerCountBase`` monitor model."""
+    pass
 
 
 class MonitoringView(TemplateView):
@@ -12,3 +34,10 @@ class MonitoringView(TemplateView):
         self.request = request
         return super(MonitoringView, self).dispatch(
             request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(MonitoringView, self).get_context_data(**kwargs)
+        ctx.update({
+            'monitor': monitor,
+        })
+        return ctx

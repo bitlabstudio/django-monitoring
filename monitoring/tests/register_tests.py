@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from ..exceptions import MonitoringRegistryException
 from ..register import MonitoringRegistry
+from ..views import IntegerCountView
 from test_app.models import UserLoginCount
 
 
@@ -23,25 +24,49 @@ class MonitoringRegistryTestCase(TestCase):
     def tearDown(self):
         self.monitor.__init__()
 
+    def test_get_model_class(self):
+        self.monitor.register(
+            'foobar', IntegerCountView.as_view(model=UserLoginCount))
+        view_func = self.monitor._registered_monitors.get('foobar')
+        result = self.monitor._get_model_class(view_func)
+        self.assertEqual(result, UserLoginCount, msg=(
+            'Internal helper method, should return the model class of a given'
+            ' view function.'))
+
+    def test_get_model_class_with_no_model(self):
+        """
+        Should raise exception when the given view func has no model defined.
+
+        """
+        self.assertRaises(
+            MonitoringRegistryException,
+            self.monitor.register,
+            'barfoo',
+            IntegerCountView.as_view(),
+        )
+
     def test_get(self):
-        self.monitor.register('foobar', UserLoginCount)
+        self.monitor.register(
+            'foobar', IntegerCountView.as_view(model=UserLoginCount))
         result = self.monitor.get('foobar')
         self.assertEqual(result, UserLoginCount, msg=(
             'Should return the monitor class for the given monitor'))
 
     def test_register(self):
-        self.monitor.register('foobar', UserLoginCount)
+        self.monitor.register(
+            'foobar', IntegerCountView.as_view(model=UserLoginCount))
         self.assertEqual(len(self.monitor._registered_monitors), 1, msg=(
             'Should add the new monitor to the singleton'))
 
     def test_register_twice(self):
         """Should raise exception when this monitor is already registered."""
-        self.monitor.register('foobar', UserLoginCount)
+        self.monitor.register(
+            'foobar', IntegerCountView.as_view(model=UserLoginCount))
         self.assertRaises(
             MonitoringRegistryException,
             self.monitor.register,
             'foobar',
-            UserLoginCount,
+            IntegerCountView.as_view(model=UserLoginCount),
         )
 
     def test_register_wrong_base_class(self):
@@ -55,11 +80,12 @@ class MonitoringRegistryTestCase(TestCase):
             MonitoringRegistryException,
             self.monitor.register,
             'foobar',
-            DummyClass,
+            IntegerCountView.as_view(model=DummyClass),
         )
 
     def test_unregister(self):
-        self.monitor.register('foobar', UserLoginCount)
+        self.monitor.register(
+            'foobar', IntegerCountView.as_view(model=UserLoginCount))
         self.monitor.unregister('foobar')
         self.assertEqual(len(self.monitor._registered_monitors), 0, msg=(
             'Should remove the monitor from the singleton'))

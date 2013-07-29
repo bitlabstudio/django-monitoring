@@ -29,6 +29,14 @@ class MonitoringRegistry(object):
     def __init__(self, *args, **kwargs):
         self._registered_monitors = {}
 
+    def _get_model_class(self, view_func):
+        """Helper method to retrieve the model from the view."""
+        model_cls = view_func.func_closure[0].cell_contents.get('model')
+        if model_cls is not None:
+            return model_cls
+        raise MonitoringRegistryException(
+            'Cannot retrieve model from view {0}'.format(view_func.func_name))
+
     def get(self, monitor_name):
         """
         Returns the monitoring class for the given monitor name.
@@ -37,24 +45,35 @@ class MonitoringRegistry(object):
           been used to register the monitor.
 
         """
-        return self._registered_monitors.get(monitor_name)
+        view_func = self._registered_monitors.get(monitor_name)
+        return self._get_model_class(view_func)
 
-    def register(self, monitor_name, model_class):
+
+    def get_all(self):
+        """Returns all registered monitors."""
+        return self._registered_monitors.items()
+
+    def register(self, monitor_name, monitor_view):
         """
         Registers a monitor on server start.
 
         :param monitor_name: A unique monitor name.
-        :param model_class: A Django model that will hold the data points for
-          the monitor.
+        :param monitor_view: A ListView that will display the data as a
+          widget. Make sure to pass in something like
+          ``IntegerCountView.as_view(model=YourModel)`` here.
 
         """
         if monitor_name in self._registered_monitors.keys():
             raise MonitoringRegistryException(
                 'A monitor with this name has already been registered')
-        if not MonitoringBase in model_class.mro():
+
+        model_cls = self._get_model_class(monitor_view)
+        if not MonitoringBase in model_cls.mro():
             raise MonitoringRegistryException(
-                'Monitoring model class must inherit MonitoringBase')
-        self._registered_monitors[monitor_name] = model_class
+                'Monitor model class {0} must inherit MonitoringBase'.format(
+                    model_cls.__name__))
+
+        self._registered_monitors[monitor_name] = monitor_view
 
     def unregister(self, monitor_name):
         """

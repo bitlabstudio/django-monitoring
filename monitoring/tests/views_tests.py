@@ -6,8 +6,22 @@ from django_libs.tests.mixins import ViewTestMixin
 from django_libs.tests.factories import UserFactory
 
 from .. import monitor
-from ..views import MonitoringView
+from ..views import IntegerCountView, MonitoringView, MonitoringViewMixin
 from .test_app.models import UserLoginCount
+
+
+class MonitoringViewMixinTestCase(TestCase):
+    """Tests for the ``MonitoringViewMixin``."""
+    longMessage = True
+
+    def test_get_template_names(self):
+        view = MonitoringViewMixin()
+        view.model = UserLoginCount
+        result = view.get_template_names()
+        expected = ['monitoring/{0}.html'.format(
+            UserLoginCount.__name__.lower()), ]
+        self.assertEqual(result, expected, msg=(
+            'The template name should be the model name, lowered'))
 
 
 class MonitoringViewTestCase(ViewTestMixin, TestCase):
@@ -17,7 +31,8 @@ class MonitoringViewTestCase(ViewTestMixin, TestCase):
     def setUp(self):
         super(MonitoringViewTestCase, self).setUp()
         monitor.__init__()
-        monitor.register('user_login_count', UserLoginCount)
+        monitor.register(
+            'user_login_count', IntegerCountView.as_view(model=UserLoginCount))
         self.user = UserFactory()
         self.login(self.user)
 

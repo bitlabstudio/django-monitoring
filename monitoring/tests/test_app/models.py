@@ -4,6 +4,7 @@ from django.dispatch import receiver
 
 from monitoring import monitor
 from monitoring.models import IntegerCountBase
+from monitoring.views import IntegerCountView
 
 
 MONITOR_USER_LOGIN_COUNT = 'user_login_count'
@@ -13,7 +14,11 @@ class UserLoginCount(IntegerCountBase):
     pass
 
 
-monitor.register(MONITOR_USER_LOGIN_COUNT, UserLoginCount)
+monitor.register(
+    MONITOR_USER_LOGIN_COUNT,
+    IntegerCountView.as_view(
+        model=UserLoginCount,
+    ))
 
 
 @receiver(user_logged_in)

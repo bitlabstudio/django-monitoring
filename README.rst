@@ -22,9 +22,11 @@ This is similar to registering model admins, we need to do this so that the
 monitoring view knows which snippets to display::
 
     from monitoring import monitor
+    from monitoring.views import IntegerCountView
     from myapp.models import MonitorUserCount
 
-    monitor.register('user_count', UserRegistrationCount)
+    monitor.register(
+        'user_count', IntegerCountView.as_view(model=MonitorUserCount))
 
 Now you can add a data point to this monitor anywhere in your code::
 

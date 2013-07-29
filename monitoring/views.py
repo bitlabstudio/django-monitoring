@@ -8,6 +8,8 @@ from . import monitor
 
 class MonitoringViewMixin(object):
     """Helper methods that all monitoring base views need."""
+    view_name = None
+
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(MonitoringViewMixin, self).dispatch(
@@ -19,6 +21,18 @@ class MonitoringViewMixin(object):
 
        """
        return ['monitoring/{0}.html'.format(self.model.__name__.lower()), ]
+
+    def get_view_name(self):
+        """
+        Returns the view name based on the view's model.
+
+        If you have set the ``view_name`` attribute on the view, that will be
+        returned instead.
+
+        """
+        if self.view_name is not None:
+            return self.view_name
+        return 'monitoring_{0}'.format(self.model.__name__.lower())
 
 
 class IntegerCountView(MonitoringViewMixin, ListView):

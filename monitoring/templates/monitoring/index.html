@@ -1,10 +1,13 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n libs_tags %}
+{% load url from future %}
 
 {% block main %}
 <h1>{% trans "Django Monitor" %}</h1>
 {% for monitor_name, monitor_class in monitor.get_all %}
     <h2>{{ monitor_name }}</h2>
-    {{ monitor_class }}
+    {% call monitor 'get_view_name' monitor_name as view_name %}
+    <div id="{{ monitor_name }}" class="monitorContainer" data-url="{% url view_name %}"></div>
+    <hr />
 {% endfor %}
 {% endblock %}

@@ -69,6 +69,7 @@ Add ``monitoring`` to your ``INSTALLED_APPS``
 
     INSTALLED_APPS = (
         ...,
+        'django_libs',
         'monitoring',
     )
 
@@ -86,6 +87,13 @@ Don't forget to migrate your database
 .. code-block:: bash
 
     ./manage.py migrate monitoring
+
+Add jQuery and ``monitoring.js`` at the bottom of your ``base.html``::
+
+.. code-block:: html
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}monitoring/js/monitoring.js"></script>
 
 
 Usage

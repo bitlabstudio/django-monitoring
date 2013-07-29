@@ -14,14 +14,35 @@ class MonitoringViewMixinTestCase(TestCase):
     """Tests for the ``MonitoringViewMixin``."""
     longMessage = True
 
+    def test_requires_login(self):
+        req = RequestFactory().get('/')
+        req.user = AnonymousUser()
+        resp = MonitoringViewMixin().dispatch(req)
+        self.assertEqual(resp.status_code, 302, msg=(
+            'Should redirect to login if anonymous'))
+
     def test_get_template_names(self):
         view = MonitoringViewMixin()
         view.model = UserLoginCount
-        result = view.get_template_names()
         expected = ['monitoring/{0}.html'.format(
             UserLoginCount.__name__.lower()), ]
+        result = view.get_template_names()
         self.assertEqual(result, expected, msg=(
             'The template name should be the model name, lowered'))
+
+    def test_get_view_name(self):
+        view = MonitoringViewMixin()
+        view.model = UserLoginCount
+        expected = 'monitoring_{0}'.format(UserLoginCount.__name__.lower())
+        result = view.get_view_name()
+        self.assertEqual(result, expected, msg=(
+            'The view name should be based on the model name, lowered'))
+
+        view.view_name = 'foobar'
+        result = view.get_view_name()
+        self.assertEqual(result, view.view_name, msg=(
+            'If view name has been set explicitly, that name should be'
+            ' returned'))
 
 
 class MonitoringViewTestCase(ViewTestMixin, TestCase):
@@ -52,9 +73,6 @@ class MonitoringViewTestCase(ViewTestMixin, TestCase):
         req.user = self.user
         view = MonitoringView()
         return req, view
-
-    def test_load_view(self):
-        self.should_be_callable_when_authenticated(self.user)
 
     def test_login_required(self):
         req, view = self.get_req_and_view()

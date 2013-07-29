@@ -23,6 +23,7 @@ STATIC_ROOT = os.path.join(APP_ROOT, '../static')
 MEDIA_ROOT = os.path.join(APP_ROOT, '../media')
 STATICFILES_DIRS = (
     os.path.join(APP_ROOT, 'static'),
+    os.path.join(APP_ROOT, 'tests/test_app/static'),
 )
 
 TEMPLATE_DIRS = (
@@ -49,6 +50,7 @@ EXTERNAL_APPS = [
     'django_jasmine',
     'django_nose',
     'monitoring.tests.test_app',
+    'django_libs',
 ]
 
 INTERNAL_APPS = [

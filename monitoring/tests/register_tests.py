@@ -45,6 +45,23 @@ class MonitoringRegistryTestCase(TestCase):
             IntegerCountView.as_view(),
         )
 
+    def test_get_view_name(self):
+        self.monitor.register(
+            'foobar', IntegerCountView.as_view(model=UserLoginCount))
+        expected = 'monitoring_{0}'.format(UserLoginCount.__name__.lower())
+        result = self.monitor.get_view_name('foobar')
+        self.assertEqual(result, expected, msg=(
+            'Should return the view name based on the model name'))
+
+    def test_get_view_name_with_view_name_set(self):
+        self.monitor.register(
+            'foobar', IntegerCountView.as_view(
+                model=UserLoginCount, view_name='foobar_view'))
+        expected = 'foobar_view'
+        result = self.monitor.get_view_name('foobar')
+        self.assertEqual(result, expected, msg=(
+            'Should return the view name as specified on the view'))
+
     def test_get(self):
         self.monitor.register(
             'foobar', IntegerCountView.as_view(model=UserLoginCount))

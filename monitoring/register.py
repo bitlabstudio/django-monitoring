@@ -48,10 +48,23 @@ class MonitoringRegistry(object):
         view_func = self._registered_monitors.get(monitor_name)
         return self._get_model_class(view_func)
 
-
     def get_all(self):
         """Returns all registered monitors."""
         return self._registered_monitors.items()
+
+    def get_view_name(self, monitor_name):
+        """
+        Returns the view name for the given monitor.
+
+        :param monitor_name: String representing the monitor name.
+
+        """
+        view_func = self._registered_monitors.get(monitor_name)
+        view_name = view_func.func_closure[0].cell_contents.get('view_name')
+        if view_name is not None:
+            return view_name
+        model = self._get_model_class(view_func)
+        return 'monitoring_{0}'.format(model.__name__.lower())
 
     def register(self, monitor_name, monitor_view):
         """

@@ -5,17 +5,25 @@ from . import monitor
 from . import views
 
 
-urlpatterns = patterns(
+def autodiscover(urlpatterns):
+    """Adds AJAX urls for the views of all registered monitors."""
+    for monitor_name, monitor_view in monitor.get_all():
+        urlpatterns += patterns(
+            '',
+            url(r'^ajax/{0}/$'.format(monitor_name),
+                monitor_view,
+                name=monitor.get_view_name(monitor_name)),
+        )
+    return urlpatterns
+
+
+default_patterns = patterns(
     '',
     url(r'^$',
         views.MonitoringView.as_view(),
         name='monitoring_view'),
 )
 
-for monitor_name, monitor_view in monitor.get_all():
-    urlpatterns += patterns(
-        '',
-        url(r'^ajax/{0}/$'.format(monitor_name),
-            monitor_view,
-            name=monitor.get_view_name(monitor_name)),
-    )
+
+urlpatterns = default_patterns
+urlpatterns = autodiscover(urlpatterns)

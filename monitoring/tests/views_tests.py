@@ -6,6 +6,7 @@ from django_libs.tests.mixins import ViewTestMixin
 from django_libs.tests.factories import UserFactory
 
 from .. import monitor
+from ..urls import urlpatterns  # NOQA
 from ..views import IntegerCountView, MonitoringView, MonitoringViewMixin
 from .test_app.models import UserLoginCount
 
@@ -80,3 +81,6 @@ class MonitoringViewTestCase(ViewTestMixin, TestCase):
         resp = view.dispatch(req)
         self.assertEqual(resp.status_code, 302, msg=(
             'Should redirect to login if not authenticated'))
+
+    def test_is_callable(self):
+        self.should_be_callable_when_authenticated(self.user)

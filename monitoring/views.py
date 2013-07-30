@@ -11,7 +11,7 @@ class MonitoringViewMixin(object):
     view_name = None
 
     @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):  # pragma: no cover
         return super(MonitoringViewMixin, self).dispatch(
             request, *args, **kwargs)
 

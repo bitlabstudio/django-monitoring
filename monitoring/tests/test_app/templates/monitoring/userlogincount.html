@@ -1,5 +1,29 @@
 {% load i18n %}
 
-{% for object in object_list %}
-    <p>{{ object }}</p>
-{% endfor %}
+<div id="{{ monitor_name }}_chart" style="width:100%; height:400px;"></div>
+<script>
+    $(function () {
+        $('#{{ monitor_name }}_chart').highcharts({
+            chart: {
+                type: 'line'
+            }
+            ,title: {
+                text: 'User Login Count'
+            }
+            ,xAxis: {
+                title: {
+                    text: 'Day'
+                }
+                ,type: 'datetime'
+                ,dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                }
+            }
+            ,series: [{
+                name: 'Count'
+                ,data: [{% for object in object_list %}[Date.UTC({{ object.date_created.year }},{{ object.date_created.month }},{{ object.date_created.day }}), {{ object.count }}]{% if not forloop.last %}, {% endif %}{% endfor %}]
+            }]
+        });
+    });
+</script>

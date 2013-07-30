@@ -1,5 +1,6 @@
 """Views for the monitoring app."""
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 
@@ -37,7 +38,11 @@ class MonitoringViewMixin(object):
 
 class IntegerCountView(MonitoringViewMixin, ListView):
     """Default view for the ``IntegerCountBase`` monitor model."""
-    pass
+    def get_queryset(self):
+        qs = super(IntegerCountView, self).get_queryset()
+        qs = qs.values('date_created').annotate(
+            count=Count('date_created')).distinct()
+        return qs
 
 
 class MonitoringView(TemplateView):

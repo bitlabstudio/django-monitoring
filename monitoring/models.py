@@ -32,7 +32,12 @@ class IntegerCountBase(MonitoringBase, models.Model):
         verbose_name=_('Value'),
     )
 
-    date_created = models.DateTimeField(
+    datetime_created = models.DateTimeField(
+        verbose_name=_('DateTime created'),
+        auto_now_add=True,
+    )
+
+    date_created = models.DateField(
         verbose_name=_('Date created'),
         auto_now_add=True,
     )

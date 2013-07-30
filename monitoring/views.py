@@ -17,11 +17,11 @@ class MonitoringViewMixin(object):
             request, *args, **kwargs)
 
     def get_template_names(self):
-       """
-       Returns the template name for the view based on the view's model.
+        """
+        Returns the template name for the view based on the view's model.
 
-       """
-       return ['monitoring/{0}.html'.format(self.model.__name__.lower()), ]
+        """
+        return ['monitoring/{0}.html'.format(self.model.__name__.lower()), ]
 
     def get_view_name(self):
         """

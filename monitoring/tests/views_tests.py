@@ -5,7 +5,7 @@ from django.test import RequestFactory, TestCase
 from django_libs.tests.mixins import ViewTestMixin
 from django_libs.tests.factories import UserFactory
 
-from .. import monitor
+from ..register import monitor
 from ..urls import urlpatterns  # NOQA
 from ..views import IntegerCountView, MonitoringView, MonitoringViewMixin
 from .test_app.models import UserLoginCount

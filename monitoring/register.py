@@ -100,3 +100,6 @@ class MonitoringRegistry(object):
         except KeyError:
             raise MonitoringRegistryException(
                 '{0} is not registered with moderation.'.format(monitor_name))
+
+
+monitor = MonitoringRegistry()

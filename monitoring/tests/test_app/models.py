@@ -2,7 +2,7 @@
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
 
-from monitoring import monitor
+from monitoring.register import monitor
 from monitoring.models import IntegerCountBase
 from monitoring.views import IntegerCountView
 

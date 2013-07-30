@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 
-from . import monitor
+from .register import monitor
 
 
 class MonitoringViewMixin(object):

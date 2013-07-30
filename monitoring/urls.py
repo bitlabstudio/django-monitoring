@@ -1,7 +1,7 @@
 """URLs for the monitoring app."""
 from django.conf.urls.defaults import patterns, url
 
-from . import monitor
+from .register import monitor
 from . import views
 
 

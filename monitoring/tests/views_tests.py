@@ -22,11 +22,27 @@ class MonitoringViewMixinTestCase(TestCase):
         self.assertEqual(resp.status_code, 302, msg=(
             'Should redirect to login if anonymous'))
 
+    def test_get_context_data(self):
+        req = RequestFactory().get('/')
+        req.user = UserFactory()
+        view = IntegerCountView(model=UserLoginCount)
+        resp = view.dispatch(req)
+        self.assertEqual(
+            resp.context_data.get('monitor_title'), 'Integer Count', msg=(
+                'Should return the monitor title as set on the base model'
+                ' class'))
+
+        view = IntegerCountView(model=UserLoginCount, monitor_title='Foobar')
+        resp = view.dispatch(req)
+        self.assertEqual(
+            resp.context_data.get('monitor_title'), 'Foobar', msg=(
+                'Should return the monitor title as set on view'
+                ' instantiation'))
+
     def test_get_template_names(self):
         view = MonitoringViewMixin()
         view.model = UserLoginCount
-        expected = ['monitoring/{0}.html'.format(
-            UserLoginCount.__name__.lower()), ]
+        expected = ['monitoring/integercountbase.html', ]
         result = view.get_template_names()
         self.assertEqual(result, expected, msg=(
             'The template name should be the model name, lowered'))

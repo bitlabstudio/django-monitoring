@@ -18,6 +18,7 @@ monitor.register(
     MONITOR_USER_LOGIN_COUNT,
     IntegerCountView.as_view(
         model=UserLoginCount,
+        monitor_title='User Login Count',
     ))
 
 

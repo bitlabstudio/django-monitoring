@@ -13,9 +13,14 @@ class MonitoringBase(object):
     raise ``NotImplementedError``.
 
     """
-    @staticmethod
-    def add(*args, **kwargs):
+    @classmethod
+    def add(cls, *args, **kwargs):  # pragma: no cover
         """Adds a data point to the table."""
+        raise NotImplementedError
+
+    @classmethod
+    def get_template_name(cls):  # pragma: no cover
+        """Returns the template name for this monitor."""
         raise NotImplementedError
 
 
@@ -44,7 +49,7 @@ class IntegerCountBase(MonitoringBase, models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('-date_created', )
+        ordering = ('date_created', )
 
     def __unicode__(self):
         return '{0} at {1}'.format(self.value, self.date_created)
@@ -52,3 +57,7 @@ class IntegerCountBase(MonitoringBase, models.Model):
     @classmethod
     def add(cls, value):
         cls.objects.create(value=value)
+
+    @classmethod
+    def get_template_name(cls):
+        return 'monitoring/integercountbase.html'

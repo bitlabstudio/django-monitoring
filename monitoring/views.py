@@ -10,18 +10,27 @@ from .register import monitor
 class MonitoringViewMixin(object):
     """Helper methods that all monitoring base views need."""
     view_name = None
+    monitor_title = None
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):  # pragma: no cover
+        self.request = request
         return super(MonitoringViewMixin, self).dispatch(
             request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(MonitoringViewMixin, self).get_context_data(**kwargs)
+        ctx.update({
+            'monitor_title': self.monitor_title,
+        })
+        return ctx
 
     def get_template_names(self):
         """
         Returns the template name for the view based on the view's model.
 
         """
-        return ['monitoring/{0}.html'.format(self.model.__name__.lower()), ]
+        return [self.model.get_template_name(), ]
 
     def get_view_name(self):
         """
@@ -38,6 +47,8 @@ class MonitoringViewMixin(object):
 
 class IntegerCountView(MonitoringViewMixin, ListView):
     """Default view for the ``IntegerCountBase`` monitor model."""
+    monitor_title = 'Integer Count'
+
     def get_queryset(self):
         qs = super(IntegerCountView, self).get_queryset()
         qs = qs.values('date_created').annotate(

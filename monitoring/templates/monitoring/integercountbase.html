@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<h2>{{ monitor_title }}</h2>
+<div id="{{ monitor_name }}_chart" style="width:90%; height:400px;"></div>
+<script>
+    YUI().use('charts', function (Y) {
+        var values = [
+            {% for object in object_list %}
+                {category:"{{ object.date_created.month }}/{{ object.date_created.day }}/{{ object.date_created.year }}", values:{{ object.count }}}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        ];
+
+        var mychart = new Y.Chart({
+            dataProvider: values,
+            render: "#{{ monitor_name }}_chart"
+        });
+    });
+</script>

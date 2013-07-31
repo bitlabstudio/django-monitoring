@@ -69,7 +69,16 @@ class MonitoringRegistry(object):
 
         """
         view_func = self._registered_monitors.get(monitor_name)
-        view_name = view_func.func_closure[0].cell_contents.get('view_name')
+        for cell in view_func.func_closure:
+            try:
+                view_name = cell.cell_contents.get('view_name')
+                break
+            except TypeError, ex:  # pragma: no cover
+                # Sometimes the cells in func_closure are sorted differently
+                # thereore we need to iterate over all cells. The wrong cells
+                # will return a class which does not have a .get method and
+                # therefore raise a TypeError
+                pass
         if view_name is not None:
             return view_name
         model = self._get_model_class(view_func)

@@ -1,6 +1,7 @@
 """Views for the monitoring app."""
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.http import Http404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 
@@ -14,6 +15,8 @@ class MonitoringViewMixin(object):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):  # pragma: no cover
+        if not request.user.is_staff:
+            raise Http404
         self.request = request
         self.monitor_name = request.GET.get('monitor')
         return super(MonitoringViewMixin, self).dispatch(
@@ -63,6 +66,8 @@ class MonitoringView(TemplateView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise Http404
         self.request = request
         return super(MonitoringView, self).dispatch(
             request, *args, **kwargs)

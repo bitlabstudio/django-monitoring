@@ -1,5 +1,6 @@
 """Tests for the views of the monitoring app."""
 from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.test import RequestFactory, TestCase
 
 from django_libs.tests.mixins import ViewTestMixin
@@ -25,6 +26,7 @@ class MonitoringViewMixinTestCase(TestCase):
     def test_get_context_data(self):
         req = RequestFactory().get('/')
         req.user = UserFactory()
+        req.user.is_staff = True
         view = IntegerCountView(model=UserLoginCount)
         resp = view.dispatch(req)
         self.assertEqual(
@@ -72,6 +74,8 @@ class MonitoringViewTestCase(ViewTestMixin, TestCase):
         monitor.register(
             'user_login_count', IntegerCountView.as_view(model=UserLoginCount))
         self.user = UserFactory()
+        self.user.is_staff = True
+        self.user.save()
         self.login(self.user)
 
     def tearDown(self):
@@ -97,6 +101,16 @@ class MonitoringViewTestCase(ViewTestMixin, TestCase):
         resp = view.dispatch(req)
         self.assertEqual(resp.status_code, 302, msg=(
             'Should redirect to login if not authenticated'))
+
+    def test_is_staff_required(self):
+        """Should raise 404 if user is not staff user."""
+        req, view = self.get_req_and_view()
+        req.user.is_staff = False
+        self.assertRaises(
+            Http404,
+            view.dispatch,
+            req,
+        )
 
     def test_is_callable(self):
         self.should_be_callable_when_authenticated(self.user)

@@ -6,7 +6,7 @@
 <h1>{% trans "Django Monitor" %}</h1>
 {% for monitor_name, monitor_class in monitor.get_all %}
     {% call monitor 'get_view_name' monitor_name as view_name %}
-    <div id="{{ monitor_name }}" class="monitorContainer" data-url="{% url view_name %}"></div>
+    <div id="{{ monitor_name }}" class="monitorContainer" data-url="{% url view_name %}?monitor={{ monitor_name }}"></div>
     <hr style="margin:2em 0px;" />
 {% endfor %}
 {% endblock %}

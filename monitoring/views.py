@@ -15,6 +15,7 @@ class MonitoringViewMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):  # pragma: no cover
         self.request = request
+        self.monitor_name = request.GET.get('monitor')
         return super(MonitoringViewMixin, self).dispatch(
             request, *args, **kwargs)
 
@@ -22,6 +23,7 @@ class MonitoringViewMixin(object):
         ctx = super(MonitoringViewMixin, self).get_context_data(**kwargs)
         ctx.update({
             'monitor_title': self.monitor_title,
+            'monitor_name': self.monitor_name,
         })
         return ctx
 

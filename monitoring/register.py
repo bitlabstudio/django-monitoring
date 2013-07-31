@@ -31,7 +31,16 @@ class MonitoringRegistry(object):
 
     def _get_model_class(self, view_func):
         """Helper method to retrieve the model from the view."""
-        model_cls = view_func.func_closure[0].cell_contents.get('model')
+        for cell in view_func.func_closure:
+            try:
+                model_cls = cell.cell_contents.get('model')
+                break
+            except TypeError, ex:  # pragma: no cover
+                # Sometimes the cells in func_closure are sorted differently
+                # thereore we need to iterate over all cells. The wrong cells
+                # will return a class which does not have a .get method and
+                # therefore raise a TypeError
+                pass
         if model_cls is not None:
             return model_cls
         raise MonitoringRegistryException(

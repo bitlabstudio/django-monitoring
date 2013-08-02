@@ -111,9 +111,9 @@ Don't forget to migrate your database
 
     ./manage.py migrate monitoring
 
-Add jQuery, YUI and ``monitoring.js`` at the bottom of your ``base.html``::
+Add jQuery, YUI and ``monitoring.js`` at the bottom of your ``base.html``
 
-.. code-block:: guess
+.. code-block:: html
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="//yui.yahooapis.com/3.11.0/build/yui/yui-min.js"></script>

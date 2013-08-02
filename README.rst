@@ -3,7 +3,7 @@ Django Monitoring
 
 DO NOT USE THIS. Work in progress.
 
-<img src="https://raw.github.com/bitmazk/django-monitoring/master/monitor.png" />
+.. image:: https://raw.github.com/bitmazk/django-monitoring/master/monitor.png
 
 A reusable Django app to monitor all aspects of your webapp.
 

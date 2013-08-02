@@ -113,7 +113,7 @@ Don't forget to migrate your database
 
 Add jQuery, YUI and ``monitoring.js`` at the bottom of your ``base.html``::
 
-.. code-block:: html
+.. code-block:: guess
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="//yui.yahooapis.com/3.11.0/build/yui/yui-min.js"></script>

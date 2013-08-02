@@ -1,14 +1,42 @@
 Django Monitoring
 =================
 
-DO NOT USE THIS. Work in progress.
+**ATTENTION: Work in progress. APIs might change any time, but we are using it in 
+production now so changes should not be too invasive.**
 
 .. image:: https://raw.github.com/bitmazk/django-monitoring/master/monitor.png
 
 A reusable Django app to monitor all aspects of your webapp.
 
 The idea is to create an app that provides some APIs that can be re-used
-by any other app.
+by any other app. It is a bit similar to the Django admin: You register
+monitors and tell the system three things:
+
+1. The name of the monitor
+2. The view that renders the data for the monitor
+3. The modle that holds the data for the monitor
+
+This app provides some default views and models for commonly used use cases but
+if you have some really complex data that needs extensive computation and a
+complicated chart to render, you can override anything to your liking.
+
+Once you have registered all your monitors, you can go to a URL
+``/monitoring/`` and see all your charts popping up via AJAX calls. We will
+extend this gradually so that you can change the order of the charts or group
+them into categories because if you have a lot of charts, it will probably be
+quite slow to load them all all the time.
+
+In your code, adding data points to your registered monitors works similar to
+the logging module::
+
+    from monitoring.register import monitor
+
+    def some_method():
+        # a user logs in
+        monitor.get('user_login_count').add(1)
+
+Vision
+------
 
 Let's say you want to create a graph that shows how many users sign up at your
 site every day.
@@ -23,7 +51,7 @@ Next you will register a new monitor that is connected to that monitor model.
 This is similar to registering model admins, we need to do this so that the
 monitoring view knows which snippets to display::
 
-    from monitoring import monitor
+    from monitoring.register import monitor
     from monitoring.views import IntegerCountView
     from myapp.models import MonitorUserCount
 
@@ -32,7 +60,7 @@ monitoring view knows which snippets to display::
 
 Now you can add a data point to this monitor anywhere in your code::
 
-    from monitoring import monitor
+    from monitoring.register import monitor
 
     def post_registration__handler(sender, user, *args, **kwargs):
         monitor.get('user_count').add(1)
@@ -42,13 +70,6 @@ to the ``MonitorUserCount`` model and it will also know that this model is
 of the type ``MonitorCountBase`` which will know how to add one data point to
 itself. In this case it would just add a row to the table which says that 1
 user was added at ``timezone.now()``.
-
-Finally django-monitoring provides a view which will show graphs for all
-connected monitors. I still have to think about how to teach that view which
-monitors to show, how to render the data and how to filter the data.
-
-The base classes will probably have an attribute which describes the default
-template but you could easily override those templates for your app.
 
 Installation
 ------------
